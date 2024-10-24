@@ -44,7 +44,7 @@ def load_and_loop_csv(file_path: str):
         with open(output_csv_file, mode='w', newline='') as csv_file:
             csv_writer = csv.writer(csv_file)
             # Write the header row to the CSV file
-            csv_writer.writerow(["dateSubmitted", "assessmentId", "platformID", "studentName", "studentId", "status", "testType", "event_id"])
+            csv_writer.writerow(["dateSubmitted", "platformID", "studentName", "studentId", "status", "testType", "assessmentId", "event_id"])
         
             # Load the CSV file into a pandas DataFrame
             df = pd.read_csv(file_path)
@@ -62,17 +62,17 @@ def load_and_loop_csv(file_path: str):
                         if attachment_id:
                             attachment_data = get_attachment_data(event_id, attachment_id)
                             if attachment_data:
-                                assessmentId = attachment_data['assessmentId']                
-                                status = attachment_data['status']
                                 dateSubmitted = str(attachment_data['dateTimeSubmitted']) if pd.notna(attachment_data['dateTimeSubmitted']) else 'N/A' # Convert dateSubmitted to string and handle NaN values
                                 platformID = attachment_data['userData'].get('platformID')
                                 studentName = attachment_data['userData'].get('studentName').upper() if attachment_data['userData'].get('studentName') else None
                                 studentId = attachment_data['userData'].get('studentID')
+                                status = attachment_data['status']
                                 test_type = determine_test_type(attachment_data)
+                                assessmentId = attachment_data['assessmentId']                
 
                                 # Write the data into the CSV file, including event_id
                                 if studentName:
-                                    csv_writer.writerow([dateSubmitted, assessmentId, platformID, studentName, studentId, status, test_type, event_id])
+                                    csv_writer.writerow([dateSubmitted, platformID, studentName, studentId, status, test_type, assessmentId, event_id])
                                 else:
                                     print("Student name not found")
 
