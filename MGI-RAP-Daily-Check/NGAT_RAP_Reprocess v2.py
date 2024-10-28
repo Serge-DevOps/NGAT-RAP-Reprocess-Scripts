@@ -179,9 +179,10 @@ def get_attachment_data(index, assessment_id, event_id, attachment_id):
 
 # Function to determine test type from attachment data
 def determine_test_type(attachment_data):
+    versionId = attachment_data['versionID']
     tests = attachment_data.get('userData', {}).get('tests', [])
     for test in tests:
-        if test.get('isCompleted') == 1:
+        if (test.get('isCompleted') == 1 and test['versionNum'] == versionId):
             return test.get('fullName')
     logging.critical(f"AssessType: Unknown")
     return "Unknown"
